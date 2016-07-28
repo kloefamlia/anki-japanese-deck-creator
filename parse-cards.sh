@@ -16,21 +16,24 @@ wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 
 #loop through the parts of speech and put them in the linguistic_function
 i=0
-while [[ null != $(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}]) ]]; do
-   echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}]
-   i=$(($i+1))
+while [[ "null" != "$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])" ]]; do
+    #current part of speech
+    current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
+    i=$(($i+1))
+    #if this is the first time throught the loop then ${Linguistic_function} is empty
+    if [[ -z  "${Linguistic_function}" ]]; then
+	Linguistic_function="${current_pos}"
+    else
+	Linguistic_function="${Linguistic_function},${current_pos}"
+    fi
 done
 
 Front="${inputword}"
 Back=""
 Example=""
 Reading=$(echo ${wordjson} | jq -r '.data[0].japanese[0].reading')
-parts_of_speech=$(echo ${wordjson} | jq -r '.data[0].senses[0].parts_of_speech')
 #Linguistic_function="$(echo ${wordjson} | jq '.data[0].senses[0].parts_of_speech'),$(echo ${wordjson} | jq '.data[0].japanese[0].reading')"
 
-
-
-if [[ "null" != "$(echo $agaru | jq -r '.data[0].senses[0].parts_of_speech[1]')" ]]; then echo "hello"; fi
 
 echo ""
 echo "the variables are..."
@@ -39,4 +42,3 @@ echo ${Back}
 echo ${Example}
 echo ${Reading}
 echo ${Linguistic_function}
-echo ${parts_of_speech}
