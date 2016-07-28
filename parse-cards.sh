@@ -11,19 +11,26 @@
 inputword="$1"
 wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 
-#we define an associative array which maps the jisho.org parts_of_speech (i.e. intransative vs transative verb, adjective etc.) to the corresponding japanese words
-declare -A ling_func_map=([])
+#TODO we define an associative array which maps the jisho.org parts_of_speech (i.e. intransative vs transative verb, adjective etc.) to the corresponding japanese words
+#declare -A ling_func_map=([])
+
+#loop through the parts of speech and put them in the linguistic_function
+i=0
+while [[ null != $(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}]) ]]; do
+   echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}]
+   i=$(($i+1))
+done
 
 Front="${inputword}"
 Back=""
 Example=""
-Reading=$(echo ${wordjson} | jq '.data[0].japanese[0].reading')
-parts_of_speech=$(echo ${wordjson} | jq '.data[0].senses[0].parts_of_speech')
+Reading=$(echo ${wordjson} | jq -r '.data[0].japanese[0].reading')
+parts_of_speech=$(echo ${wordjson} | jq -r '.data[0].senses[0].parts_of_speech')
 #Linguistic_function="$(echo ${wordjson} | jq '.data[0].senses[0].parts_of_speech'),$(echo ${wordjson} | jq '.data[0].japanese[0].reading')"
 
-for i in ${parts_of_speech}; do
-   echo ${i}
-done
+
+
+if [[ "null" != "$(echo $agaru | jq -r '.data[0].senses[0].parts_of_speech[1]')" ]]; then echo "hello"; fi
 
 echo ""
 echo "the variables are..."
