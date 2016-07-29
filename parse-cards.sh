@@ -30,6 +30,9 @@ while [[ "null" != "${current_pos}" ]]; do
     current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
 done
 
+#for back we need to loop through .data[0].senses
+#and get the .data[0].senses[i].english_definitions[] array
+
 Front="${inputword}"
 Back=""
 Example=""
