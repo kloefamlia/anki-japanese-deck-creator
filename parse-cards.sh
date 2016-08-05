@@ -12,7 +12,19 @@ inputword="$1"
 wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 
 #TODO we define an associative array which maps the jisho.org parts_of_speech (i.e. intransative vs transative verb, adjective etc.) to the corresponding japanese words
-declare -A ling_func_map=( ["Godan verb with ru ending"]="五段" ["intransitive verb"]="自動詞" )
+declare -A ling_func_map=( 
+	["Godan verb with ru ending"]="五段"
+	["Ichidan verb"]="一段"
+	["Transitive verb"]="他動詞"
+	["intransitive verb"]="自動詞"
+	["Noun"]="名詞"
+	["Suru verb"]="する" 
+	["I-adjective"]="形容詞"
+	["Na-adjective"]="形容動詞"
+	["No-adjective"]="の形容動詞"
+	["Adverb"]="副詞"
+	["Adverb taking the 'to' particle"]="と副詞"
+)
 
 #loop through the parts of speech and put them in the linguistic_function
 i=0
