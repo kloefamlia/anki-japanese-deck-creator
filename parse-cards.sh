@@ -9,8 +9,12 @@
 inputword="$1"
 wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 
-#TODO we define an associative array which maps the jisho.org parts_of_speech (i.e. intransative vs transative verb, adjective etc.) to the corresponding japanese words
-declare -A ling_func_map=( 
+#TODO add: "Adverbial noun","Temporal noun","Godan verb with u ending","Expression","Godan verb with su ending",
+#	   "Godan verb with mu ending","Godan verb with gu ending","Godan verb with ku ending","Godan verb with bu ending",
+#	   "Godan verb - aru special class","Godan verb with nu ending","Godan verb with tsu ending",
+#	   "Nidan verb (lower class) with dzu ending (archaic)","Ichidan verb - zuru verb (alternative form of -jiru verbs)"
+#I may need to account for the other godan verbs as well?
+declare -A ling_func_map=(
 	["Godan verb with ru ending"]="五段"
 	["Ichidan verb"]="一段"
 	["Transitive verb"]="他動詞"
@@ -27,16 +31,16 @@ declare -A ling_func_map=(
 #loop through the parts of speech and put them in the linguistic_function
 i=0
 #pos = part of speech
-current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
+current_pos=$(echo "${wordjson}" | jq -r .data[0].senses[0].parts_of_speech["${i}"])
 #if current_pos = "null" then that means that we've reached the end of the parts_of_speech array
 while [[ "null" != "${current_pos}" ]]; do
     #for debugging purposes...
     echo "pos"
-    echo "${current_pos}"
+    echo "The current pos is:	${current_pos}"
     echo "pos"
     #if this is the first time throught the loop then ${Linguistic_function} is empty
     if [[ -z  "${Linguistic_function}" ]]; then
-	Linguistic_function="${ling_func_map["${current_pos}"]}"
+	Linguistic_function=${ling_func_map["${current_pos}"]}
     else
 	Linguistic_function="${Linguistic_function},${ling_func_map["${current_pos}"]}"
     fi
@@ -44,8 +48,24 @@ while [[ "null" != "${current_pos}" ]]; do
     current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
 done
 
-#for back we need to loop through .data[0].senses
+#for back we need to loop through .data[0].senses and then loop throught senses[i].english_definitions[j]
 #and get the .data[0].senses[i].english_definitions[] array
+
+i=0
+current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
+while [[ "null" != "${current_defs}" ]]; do
+    echo "${current_defs}"
+    j=0
+    current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
+    while [[ "null" != "${current_definition}" ]]; do
+    	echo "${current_definition}"
+    	j=$(($j+1))
+    	current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
+    done
+    i=$(($i+1))
+    current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
+done
+
 
 #Front="${inputword}"
 Front=$(echo ${wordjson} | jq -r '.data[0].japanese[0].word')
