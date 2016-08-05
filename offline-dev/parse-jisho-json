@@ -40,8 +40,24 @@ while [[ "null" != "${current_pos}" ]]; do
     current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
 done
 
-#for back we need to loop through .data[0].senses
+#for back we need to loop through .data[0].senses and then loop throught senses[i].english_definitions[j]
 #and get the .data[0].senses[i].english_definitions[] array
+
+i=0
+current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
+while [[ "null" != "${current_defs}" ]]; do
+    echo "${current_defs}"
+    j=0
+    current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
+    while [[ "null" != "${current_definition}" ]]; do
+    	echo "${current_definition}"
+    	j=$(($j+1))
+    	current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
+    done
+    i=$(($i+1))
+    current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
+done
+
 
 #Front="${inputword}"
 Front=$(echo ${wordjson} | jq -r '.data[0].japanese[0].word')
