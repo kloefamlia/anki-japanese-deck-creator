@@ -47,7 +47,8 @@ done
 #for back we need to loop through .data[0].senses
 #and get the .data[0].senses[i].english_definitions[] array
 
-Front="${inputword}"
+#Front="${inputword}"
+Front=$(echo ${wordjson} | jq -r '.data[0].japanese[0].word')
 Back=""
 Example=""
 Reading=$(echo ${wordjson} | jq -r '.data[0].japanese[0].reading')
