@@ -12,19 +12,23 @@ inputword="$1"
 wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 
 #TODO we define an associative array which maps the jisho.org parts_of_speech (i.e. intransative vs transative verb, adjective etc.) to the corresponding japanese words
-#declare -A ling_func_map=([])
+declare -A ling_func_map=( ["Godan verb with ru ending"]="五段" ["intransitive verb"]="自動詞" )
 
 #loop through the parts of speech and put them in the linguistic_function
 i=0
-#current part of speech
+#pos = part of speech
 current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
 #if current_pos = "null" then that means that we've reached the end of the parts_of_speech array
 while [[ "null" != "${current_pos}" ]]; do
+    #for debugging purposes...
+    echo "pos"
+    echo "${current_pos}"
+    echo "pos"
     #if this is the first time throught the loop then ${Linguistic_function} is empty
     if [[ -z  "${Linguistic_function}" ]]; then
-	Linguistic_function="${current_pos}"
+	Linguistic_function="${ling_func_map["${current_pos}"]}"
     else
-	Linguistic_function="${Linguistic_function},${current_pos}"
+	Linguistic_function="${Linguistic_function},${ling_func_map["${current_pos}"]}"
     fi
     i=$(($i+1))
     current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
