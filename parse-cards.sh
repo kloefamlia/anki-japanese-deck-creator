@@ -53,15 +53,22 @@ done
 
 i=0
 current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
+Back=""
 while [[ "null" != "${current_defs}" ]]; do
     echo "${current_defs}"
     j=0
     current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
     while [[ "null" != "${current_definition}" ]]; do
     	echo "${current_definition}"
-    	j=$(($j+1))
+    	if [[ "0" == "${j}" ]]; then
+	    Back="${Back}${current_definition}"
+	else
+	    Back="${Back}, ${current_definition}"
+	fi
+	j=$(($j+1))
     	current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
     done
+    Back="${Back}; "
     i=$(($i+1))
     current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
 done
@@ -69,7 +76,7 @@ done
 
 #Front="${inputword}"
 Front=$(echo ${wordjson} | jq -r '.data[0].japanese[0].word')
-Back=""
+#Back=""
 Example=""
 Reading=$(echo ${wordjson} | jq -r '.data[0].japanese[0].reading')
 #Linguistic_function="$(echo ${wordjson} | jq '.data[0].senses[0].parts_of_speech'),$(echo ${wordjson} | jq '.data[0].japanese[0].reading')"
