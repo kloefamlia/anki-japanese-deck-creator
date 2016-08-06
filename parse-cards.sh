@@ -28,6 +28,7 @@ declare -A ling_func_map=(
 	["Adverb taking the 'to' particle"]="と副詞"
 )
 
+
 #loop through the parts of speech and put them in the linguistic_function
 i=0
 #pos = part of speech
@@ -48,9 +49,9 @@ while [[ "null" != "${current_pos}" ]]; do
     current_pos=$(echo ${wordjson} | jq -r .data[0].senses[0].parts_of_speech[${i}])
 done
 
+
 #for back we need to loop through .data[0].senses and then loop throught senses[i].english_definitions[j]
 #and get the .data[0].senses[i].english_definitions[] array
-
 i=0
 current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
 Back=""
