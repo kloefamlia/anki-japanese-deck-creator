@@ -9,6 +9,8 @@
 inputword="$1"
 wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 
+#echo ${wordjson}
+
 #TODO add: "Adverbial noun","Temporal noun","Godan verb with u ending","Expression","Godan verb with su ending",
 #	   "Godan verb with mu ending","Godan verb with gu ending","Godan verb with ku ending","Godan verb with bu ending",
 #	   "Godan verb - aru special class","Godan verb with nu ending","Godan verb with tsu ending",
@@ -56,19 +58,26 @@ i=0
 current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
 Back=""
 while [[ "null" != "${current_defs}" ]]; do
-    echo "${current_defs}"
+    #echo "${current_defs}"
     j=0
-    current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
+    current_definition=$(echo "${current_defs}" | jq -r .["${j}"])
     while [[ "null" != "${current_definition}" ]]; do
-    	echo "${current_definition}"
+    	#echo "${current_definition}"
     	if [[ "0" == "${j}" ]]; then
+	    #if this is the case then this is the start of a new definition and thus back currently ends in a "; "
 	    Back="${Back}${current_definition}"
 	else
 	    Back="${Back}, ${current_definition}"
 	fi
 	j=$(($j+1))
-    	current_definition=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions["${j}"])
+    	current_definition=$(echo "${current_defs}" | jq -r .["${j}"])
     done
+
+    #there may be more than 1 piece of info (I have yet to find a definition that does though) but for now we only take the first piece of info TODO
+    current_info=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].info[0])
+    if [[ "null" != "${current_info}" ]]; then
+	Back="${Back} (${current_info})"
+    fi
     Back="${Back}; "
     i=$(($i+1))
     current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
