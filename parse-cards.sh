@@ -111,7 +111,7 @@ while [[ "null" != "${current_sense}" ]]; do
         j=$(($j+1))
         current_pos=$(echo ${current_sense} | jq -r .parts_of_speech[${j}])
     done
-    ling_func="${ling_func}; "
+    ling_func="${ling_func};"
 
     i=$(($i+1))
     current_sense=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"])
@@ -136,3 +136,5 @@ echo ${Back}
 echo ${Example}
 echo ${Reading}
 echo ${Linguistic_function}
+
+echo \"${Front}\",\"${Back}\",\"${Example}\",\"${Reading}\",\"${Linguistic_function}\" >> ./anki-cards.csv
