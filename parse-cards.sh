@@ -11,24 +11,35 @@ wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 
 #echo ${wordjson}
 
-#TODO add: "Adverbial noun","Temporal noun","Godan verb with u ending","Expression","Godan verb with su ending",
-#	   "Godan verb with mu ending","Godan verb with gu ending","Godan verb with ku ending","Godan verb with bu ending",
-#	   "Godan verb - aru special class","Godan verb with nu ending","Godan verb with tsu ending",
+#TODO add:
+#	   "Godan verb - aru special class",
 #	   "Nidan verb (lower class) with dzu ending (archaic)","Ichidan verb - zuru verb (alternative form of -jiru verbs)"
-#	   "Suffix"
+#	   something about kuru and suru as well
 #I may need to account for the other godan verbs as well?
 declare -A ling_func_map=(
 	["Godan verb with ru ending"]="五段"
+	["Godan verb with u ending"]="五段"
+        ["Godan verb with su ending"]="五段"
+        ["Godan verb with mu ending"]="五段"
+        ["Godan verb with gu ending"]="五段"
+        ["Godan verb with ku ending"]="五段"
+        ["Godan verb with bu ending"]="五段"
+        ["Godan verb with nu ending"]="五段"
+        ["Godan verb with tsu ending"]="五段"
 	["Ichidan verb"]="一段"
 	["Transitive verb"]="他動詞"
 	["intransitive verb"]="自動詞"
 	["Noun"]="名詞"
+	["Adverbial noun"]="名詞"
+	["Temporal noun"]="名詞"
 	["Suru verb"]="する" 
 	["I-adjective"]="形容詞"
 	["Na-adjective"]="形容動詞"
 	["No-adjective"]="の形容動詞"
 	["Adverb"]="副詞"
 	["Adverb taking the 'to' particle"]="と副詞"
+	["Suffix"]="接尾辞"
+	["Expression"]="表現"
 )
 
 
