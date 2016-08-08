@@ -8,3 +8,4 @@ TODO:
 -handle the esp. (some kanji) definitions
 -handle when different defs of the same word are different parts of speech
 -most of the exceptions seem to be verbs and adverbs so maybe seperate those somehow?
+-make a note about how your word needs to be the first result in jisho ( use kotonisuru example )

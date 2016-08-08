@@ -38,10 +38,6 @@ i=0
 current_pos=$(echo "${wordjson}" | jq -r .data[0].senses[0].parts_of_speech["${i}"])
 #if current_pos = "null" then that means that we've reached the end of the parts_of_speech array
 while [[ "null" != "${current_pos}" ]]; do
-    #for debugging purposes...
-    echo "pos"
-    echo "The current pos is:	${current_pos}"
-    echo "pos"
     #if this is the first time throught the loop then ${Linguistic_function} is empty
     if [[ -z  "${Linguistic_function}" ]]; then
 	Linguistic_function=${ling_func_map["${current_pos}"]}
@@ -62,6 +58,7 @@ Back=""
 while [[ "null" != "${current_sense}" ]]; do
     #echo "${current_sense}"
     j=0
+
     current_definition=$(echo "${current_sense}" | jq -r .english_definitions["${j}"])
     while [[ "null" != "${current_definition}" ]]; do
     	#echo "${current_definition}"
@@ -80,11 +77,38 @@ while [[ "null" != "${current_sense}" ]]; do
     if [[ "null" != "${current_info}" ]]; then
 	Back="${Back} (${current_info})"
     fi
+
     Back="${Back}; "
+    j=0
+
+    current_pos=$(echo "${current_sense}" | jq -r .parts_of_speech["${j}"])
+    while [[ "null" != "${current_pos}" ]]; do
+        #for debugging purposes...
+        #echo "pos"
+        #echo "The current pos is:   ${current_pos}"
+        #echo "pos"
+        #we define 2 ling func vars since sometimes cards have pos which apply to every sense of the word, and sometimes we need to distinguish the senses with their unique pos
+        if [[ "0" ==  "${j}" ]]; then
+            ling_func="${ling_func}${ling_func_map["${current_pos}"]}"
+        else
+            ling_func="${ling_func},${ling_func_map["${current_pos}"]}"
+        fi
+	#if i != 0 then that means that this word has different senses with different pos, therefore we must use this version for the card instead of the Linguistic_function we defined earlier
+	if [[ "0" != "${i}" ]]; then
+	    multiple_pos=true
+	fi
+        j=$(($j+1))
+        current_pos=$(echo ${current_sense} | jq -r .parts_of_speech[${j}])
+    done
+    ling_func="${ling_func}; "
+
     i=$(($i+1))
     current_sense=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"])
 done
 
+if [[ "true" == "${multiple_pos}" ]]; then
+    Linguistic_function="${ling_func}"
+fi
 
 #Front="${inputword}"
 Front=$(echo ${wordjson} | jq -r '.data[0].japanese[0].word')
