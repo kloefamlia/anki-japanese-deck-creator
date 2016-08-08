@@ -15,6 +15,7 @@ wordjson=$(curl -XGET http://jisho.org/api/v1/search/words?keyword="${1}")
 #	   "Godan verb with mu ending","Godan verb with gu ending","Godan verb with ku ending","Godan verb with bu ending",
 #	   "Godan verb - aru special class","Godan verb with nu ending","Godan verb with tsu ending",
 #	   "Nidan verb (lower class) with dzu ending (archaic)","Ichidan verb - zuru verb (alternative form of -jiru verbs)"
+#	   "Suffix"
 #I may need to account for the other godan verbs as well?
 declare -A ling_func_map=(
 	["Godan verb with ru ending"]="五段"
@@ -54,13 +55,14 @@ done
 
 #for back we need to loop through .data[0].senses and then loop throught senses[i].english_definitions[j]
 #and get the .data[0].senses[i].english_definitions[] array
+#TODO move linguistic function to be calculated here maybe
 i=0
-current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
+current_sense=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"])
 Back=""
-while [[ "null" != "${current_defs}" ]]; do
-    #echo "${current_defs}"
+while [[ "null" != "${current_sense}" ]]; do
+    #echo "${current_sense}"
     j=0
-    current_definition=$(echo "${current_defs}" | jq -r .["${j}"])
+    current_definition=$(echo "${current_sense}" | jq -r .english_definitions["${j}"])
     while [[ "null" != "${current_definition}" ]]; do
     	#echo "${current_definition}"
     	if [[ "0" == "${j}" ]]; then
@@ -70,7 +72,7 @@ while [[ "null" != "${current_defs}" ]]; do
 	    Back="${Back}, ${current_definition}"
 	fi
 	j=$(($j+1))
-    	current_definition=$(echo "${current_defs}" | jq -r .["${j}"])
+    	current_definition=$(echo "${current_sense}" | jq -r .english_definitions["${j}"])
     done
 
     #there may be more than 1 piece of info (I have yet to find a definition that does though) but for now we only take the first piece of info TODO
@@ -80,7 +82,7 @@ while [[ "null" != "${current_defs}" ]]; do
     fi
     Back="${Back}; "
     i=$(($i+1))
-    current_defs=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].english_definitions)
+    current_sense=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"])
 done
 
 
