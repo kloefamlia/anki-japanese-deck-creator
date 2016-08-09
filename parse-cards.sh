@@ -88,6 +88,12 @@ while [[ "null" != "${current_sense}" ]]; do
     if [[ "null" != "${current_info}" ]]; then
 	Back="${Back} (${current_info})"
     fi
+    #same for tags
+    current_tag=$(echo "${wordjson}" | jq -r .data[0].senses["${i}"].tags[0])
+    if [[ "null" != "${current_tag}" ]]; then
+        Back="${Back} (${current_tag})"
+    fi
+
 
     Back="${Back}; "
     j=0
