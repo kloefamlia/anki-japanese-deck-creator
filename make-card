@@ -134,6 +134,11 @@ Example=""
 Reading=$(echo ${wordjson} | jq -r '.data[0].japanese[0].reading')
 #Linguistic_function="$(echo ${wordjson} | jq '.data[0].senses[0].parts_of_speech'),$(echo ${wordjson} | jq '.data[0].japanese[0].reading')"
 
+#sometimes there is no japanese[0].word (usually when there's no kanji) so we use the reading instead
+if [[ "null" == "${Front}" ]]; then
+    Front=${Reading}
+fi
+
 
 echo ""
 echo "the variables are..."
