@@ -9,3 +9,4 @@ TODO:
 -handle when different defs of the same word are different parts of speech
 -most of the exceptions seem to be verbs and adverbs so maybe seperate those somehow?
 -make a note about how your word needs to be the first result in jisho ( use kotonisuru example )
+-add a check to ensure that we're actually getting n3 or n2 or whatever words as we expect (JUST KIDDING, looks like whether or not it belongs to n3 or any other level of study is not included in the response)

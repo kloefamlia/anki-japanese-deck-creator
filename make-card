@@ -143,4 +143,4 @@ echo ${Example}
 echo ${Reading}
 echo ${Linguistic_function}
 
-echo \"${Front}\",\"${Back}\",\"${Example}\",\"${Reading}\",\"${Linguistic_function}\" >> ./anki-cards.csv
+echo \'${Front}\',\'${Back}\',\'${Example}\',\'${Reading}\',\'${Linguistic_function}\' >> ./anki-cards.csv
