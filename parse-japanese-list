@@ -1,1 +1,7 @@
+inputfile="$1"
 
+rm ./anki-cards.csv
+
+while read -r word; do
+    ./make-card ${word}
+done < ${inputfile}
