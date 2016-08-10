@@ -1,0 +1,2 @@
+#these are examples of words our script does not handle properly and must be added manually to anki
+表す vs 現す
