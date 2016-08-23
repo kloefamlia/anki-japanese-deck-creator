@@ -129,7 +129,8 @@ fi
 
 #Front="${inputword}"
 Front=$(echo ${wordjson} | jq -r '.data[0].japanese[0].word')
-#Back=""
+#accounting for fields which might accidentally have a quote in them messing up our anki fields on import
+Back=$(echo $Back | sed s/\"/\'/g)
 Example=""
 Reading=$(echo ${wordjson} | jq -r '.data[0].japanese[0].reading')
 #Linguistic_function="$(echo ${wordjson} | jq '.data[0].senses[0].parts_of_speech'),$(echo ${wordjson} | jq '.data[0].japanese[0].reading')"
@@ -148,4 +149,4 @@ echo ${Example}
 echo ${Reading}
 echo ${Linguistic_function}
 
-echo \'${Front}\',\'${Back}\',\'${Example}\',\'${Reading}\',\'${Linguistic_function}\' >> ./anki-cards.csv
+echo \"${Front}\",\"${Back}\",\"${Example}\",\"${Reading}\",\"${Linguistic_function}\" >> ./anki-cards.csv
