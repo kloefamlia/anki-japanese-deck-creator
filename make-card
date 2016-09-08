@@ -42,6 +42,8 @@ declare -A ling_func_map=(
 	["Expression"]="表現"
 )
 
+#TODO deal with wikipedia definitions since they're literally useless ya goof
+
 
 #loop through the parts of speech and put them in the linguistic_function
 i=0
